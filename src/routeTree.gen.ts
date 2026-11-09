@@ -10,9 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as MahasiswaRouteImport } from './routes/mahasiswa'
+import { Route as StafRouteImport } from './routes/staf'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as MahasiswaIndexRouteImport } from './routes/mahasiswa.index'
 import { Route as MahasiswaPengajuanRouteImport } from './routes/mahasiswa.pengajuan'
+import { Route as StafIndexRouteImport } from './routes/staf.index'
 import { Route as MahasiswaHasilIdRouteImport } from './routes/mahasiswa.hasil.$id'
 import { Route as MahasiswaJadwalIdRouteImport } from './routes/mahasiswa.jadwal.$id'
 
@@ -21,10 +25,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MahasiswaRoute = MahasiswaRouteImport.update({
   id: '/mahasiswa',
   path: '/mahasiswa',
   getParentRoute: () => rootRouteImport,
+} as any)
+const StafRoute = StafRouteImport.update({
+  id: '/staf',
+  path: '/staf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const MahasiswaIndexRoute = MahasiswaIndexRouteImport.update({
   id: '/',
@@ -35,6 +54,11 @@ const MahasiswaPengajuanRoute = MahasiswaPengajuanRouteImport.update({
   id: '/pengajuan',
   path: '/pengajuan',
   getParentRoute: () => MahasiswaRoute,
+} as any)
+const StafIndexRoute = StafIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StafRoute,
 } as any)
 const MahasiswaHasilIdRoute = MahasiswaHasilIdRouteImport.update({
   id: '/hasil/$id',
@@ -49,25 +73,35 @@ const MahasiswaJadwalIdRoute = MahasiswaJadwalIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/mahasiswa': typeof MahasiswaRouteWithChildren
+  '/staf': typeof StafRouteWithChildren
   '/mahasiswa/pengajuan': typeof MahasiswaPengajuanRoute
+  '/admin/': typeof AdminIndexRoute
   '/mahasiswa/': typeof MahasiswaIndexRoute
+  '/staf/': typeof StafIndexRoute
   '/mahasiswa/hasil/$id': typeof MahasiswaHasilIdRoute
   '/mahasiswa/jadwal/$id': typeof MahasiswaJadwalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/mahasiswa/pengajuan': typeof MahasiswaPengajuanRoute
+  '/admin': typeof AdminIndexRoute
   '/mahasiswa': typeof MahasiswaIndexRoute
+  '/staf': typeof StafIndexRoute
   '/mahasiswa/hasil/$id': typeof MahasiswaHasilIdRoute
   '/mahasiswa/jadwal/$id': typeof MahasiswaJadwalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/mahasiswa': typeof MahasiswaRouteWithChildren
+  '/staf': typeof StafRouteWithChildren
   '/mahasiswa/pengajuan': typeof MahasiswaPengajuanRoute
+  '/admin/': typeof AdminIndexRoute
   '/mahasiswa/': typeof MahasiswaIndexRoute
+  '/staf/': typeof StafIndexRoute
   '/mahasiswa/hasil/$id': typeof MahasiswaHasilIdRoute
   '/mahasiswa/jadwal/$id': typeof MahasiswaJadwalIdRoute
 }
@@ -75,31 +109,43 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/mahasiswa'
+    | '/staf'
     | '/mahasiswa/pengajuan'
+    | '/admin/'
     | '/mahasiswa/'
+    | '/staf/'
     | '/mahasiswa/hasil/$id'
     | '/mahasiswa/jadwal/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/mahasiswa/pengajuan'
+    | '/admin'
     | '/mahasiswa'
+    | '/staf'
     | '/mahasiswa/hasil/$id'
     | '/mahasiswa/jadwal/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/mahasiswa'
+    | '/staf'
     | '/mahasiswa/pengajuan'
+    | '/admin/'
     | '/mahasiswa/'
+    | '/staf/'
     | '/mahasiswa/hasil/$id'
     | '/mahasiswa/jadwal/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   MahasiswaRoute: typeof MahasiswaRouteWithChildren
+  StafRoute: typeof StafRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -111,12 +157,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mahasiswa': {
       id: '/mahasiswa'
       path: '/mahasiswa'
       fullPath: '/mahasiswa'
       preLoaderRoute: typeof MahasiswaRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/staf': {
+      id: '/staf'
+      path: '/staf'
+      fullPath: '/staf'
+      preLoaderRoute: typeof StafRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/mahasiswa/': {
       id: '/mahasiswa/'
@@ -131,6 +198,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/mahasiswa/pengajuan'
       preLoaderRoute: typeof MahasiswaPengajuanRouteImport
       parentRoute: typeof MahasiswaRoute
+    }
+    '/staf/': {
+      id: '/staf/'
+      path: '/'
+      fullPath: '/staf/'
+      preLoaderRoute: typeof StafIndexRouteImport
+      parentRoute: typeof StafRoute
     }
     '/mahasiswa/hasil/$id': {
       id: '/mahasiswa/hasil/$id'
@@ -148,6 +222,16 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface MahasiswaRouteChildren {
   MahasiswaPengajuanRoute: typeof MahasiswaPengajuanRoute
@@ -167,9 +251,21 @@ const MahasiswaRouteWithChildren = MahasiswaRoute._addFileChildren(
   MahasiswaRouteChildren,
 )
 
+interface StafRouteChildren {
+  StafIndexRoute: typeof StafIndexRoute
+}
+
+const StafRouteChildren: StafRouteChildren = {
+  StafIndexRoute: StafIndexRoute,
+}
+
+const StafRouteWithChildren = StafRoute._addFileChildren(StafRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   MahasiswaRoute: MahasiswaRouteWithChildren,
+  StafRoute: StafRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
