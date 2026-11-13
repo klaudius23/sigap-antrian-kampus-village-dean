@@ -63,7 +63,7 @@ export function WalkinDialog({ counters }: { counters: number }) {
             <Select value={counter} onValueChange={setCounter}>
               <SelectTrigger id="wi-counter" className="h-11"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="auto">Otomatis (paling sedikit antrean)</SelectItem>
+                <SelectItem value="auto">Otomatis (ditentukan sistem)</SelectItem>
                 {Array.from({ length: counters }, (_, i) => <SelectItem key={i} value={String(i + 1)}>Loket {i + 1}</SelectItem>)}
               </SelectContent>
             </Select>
