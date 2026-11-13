@@ -1,6 +1,7 @@
 import type {
   Application,
   ApplicationInput,
+  ApplicationStatus,
   Appointment,
   AuditLog,
   Decision,
@@ -225,6 +226,14 @@ const mock = {
     const u = currentUser();
     return getDB().applications.filter((a) => a.student_id === u?.id);
   },
+  async listApplications(status?: ApplicationStatus): Promise<Application[]> {
+    await delay();
+    return structuredClone(
+      getDB().applications
+        .filter((a) => a.status !== "draft" && (!status || a.status === status))
+        .sort((a, b) => b.updated_at.localeCompare(a.updated_at)),
+    );
+  },
   async getApplication(id: string): Promise<Application> {
     await delay();
     return structuredClone(findApp(id));
@@ -396,6 +405,8 @@ const mock = {
     a.status = decision === "setujui" ? "disetujui" : decision === "revisi" ? "perlu_revisi" : "ditolak";
     a.decision_reason = reason;
     if (decision === "revisi") a.staff_notes = reason;
+    a.updated_at = new Date().toISOString();
+    getDB().queue.forEach((q) => { if (q.application_id === id && q.state === "dilayani") q.state = "selesai"; });
     log(`Keputusan: ${decision}${override ? " (override ML)" : ""}`, `Pengajuan ${id}`);
     save();
     return a;
@@ -466,6 +477,8 @@ export const api = {
   estimateDistance: (address: string, kelurahan: string) =>
     USE_MOCK ? mock.estimateDistance(address, kelurahan) : http<{ distance_km: number; category: "dekat" | "jauh" }>(`/distance?address=${encodeURIComponent(address)}&kelurahan=${encodeURIComponent(kelurahan)}`),
   myApplications: () => (USE_MOCK ? mock.myApplications() : http<Application[]>("/applications?mine=true")),
+  listApplications: (status?: ApplicationStatus) =>
+    USE_MOCK ? mock.listApplications(status) : http<Application[]>(`/applications${status ? `?status=${status}` : ""}`),
   getApplication: (id: string) => (USE_MOCK ? mock.getApplication(id) : http<Application>(`/applications/${id}`)),
   submitApplication: (id: string) => (USE_MOCK ? mock.submitApplication(id) : http<Application>(`/applications/${id}/submit`, { method: "POST" })),
   uploadDocument: (id: string, file: File, kind: UploadedDocument["kind"]) => {
