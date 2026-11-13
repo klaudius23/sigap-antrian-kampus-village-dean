@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Clock, Hourglass, Megaphone, UserX } from "lucide-react";
@@ -156,7 +156,7 @@ function QueueBoard() {
   );
 }
 
-function Stat({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: React.ReactNode; tone?: "danger" }) {
+function Stat({ icon, label, value, tone }: { icon: ReactNode; label: string; value: ReactNode; tone?: "danger" }) {
   return (
     <div className="rounded-xl border bg-card p-4 shadow-soft">
       <p className={`flex items-center gap-1.5 text-xs font-medium ${tone === "danger" ? "text-destructive" : "text-muted-foreground"}`}>{icon}{label}</p>
@@ -165,7 +165,7 @@ function Stat({ icon, label, value, tone }: { icon: React.ReactNode; label: stri
   );
 }
 
-function Column({ title, count, icon, highlight, children }: { title: string; count: number; icon: React.ReactNode; highlight?: boolean; children: React.ReactNode[] }) {
+function Column({ title, count, icon, highlight, children }: { title: string; count: number; icon: ReactNode; highlight?: boolean; children: ReactNode[] }) {
   return (
     <section className={`flex flex-col rounded-2xl border p-3 ${highlight ? "bg-secondary/60" : "bg-muted/50"}`} aria-label={`Kolom ${title}`}>
       <h2 className="mb-3 flex items-center justify-between px-1 font-semibold">
